@@ -1,0 +1,26 @@
+{
+  "name": "web-app",
+  "version": "1.0.0",
+  "description": "web app for chemestriy BGU",
+  "main": "index.js",
+  "scripts": {
+    "test": "t"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/danielel10/project.git"
+  },
+  "author": "daniel+tal",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/danielel10/project/issues"
+  },
+  "homepage": "https://github.com/danielel10/project#readme",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "bootstrap": "^4.6.2",
+    "bootstrap-vue": "^2.23.1",
+    "flask": "^2.1.0",
+    "flask-cors": "^3.0.10"
+  }
+}
