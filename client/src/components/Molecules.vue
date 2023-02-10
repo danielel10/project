@@ -4,14 +4,15 @@
       <div class="col-sm-10">
         <h1>Molecules</h1>
         <hr><br><br>
-        <button type="button" class="btn btn-success btn-sm">Add Molecule</button>
+        <button type="button" class="btn btn-success btn-sm"
+                v-b-modal.molecule-modal>Add Molecule</button>
         <br><br>
         <table class="table table-hover">
           <thead>
             <tr>
               <th scope="col">fName</th>
               <th scope="col">Mass</th>
-              <th scope="col">Plot</th>
+              <th scope="col">Plot?</th>
               <th></th>
             </tr>
           </thead>
@@ -21,7 +22,7 @@
               <td>{{ molecule.fName }}</td>
               <td>{{ molecule.Mass }}</td>
               <td>
-                <span v-if="molecule.plot">Yes</span>
+                <span v-if="molecule.Plot">Yes</span>
                 <span v-else>No</span>
               </td>
               <td>
@@ -35,41 +36,43 @@
         </table>
       </div>
     </div>
+    <b-modal ref="addMoleculeModal"
+             id="molecule-modal"
+             title="Add a new molecule"
+             hide-footer>
+        <b-form @submit="onSubmit" @reset="onReset" class="w-100">
+        <b-form-group id="form-fName-group"
+                    label="fName:"
+                    label-for="form-fName-input">
+          <b-form-input id="form-fName-input"
+                        type="text"
+                        v-model="addMoleculeForm.fName"
+                        required
+                        placeholder="Enter name">
+          </b-form-input>
+        </b-form-group>
+        <b-form-group id="form-Mass-group"
+                      label="Mass:"
+                      label-for="form-Mass-input">
+            <b-form-input id="form-Mass-input"
+                          type="text"
+                          v-model="addMoleculeForm.Mass"
+                          required
+                          placeholder="Enter mass">
+            </b-form-input>
+        </b-form-group>
+        <b-form-group id="form-plot-group">
+          <b-form-checkbox-group v-model="addMoleculeForm.plot" id="form-checks">
+            <b-form-checkbox value="true">plot?</b-form-checkbox>
+          </b-form-checkbox-group>
+        </b-form-group>
+        <b-button-group>
+          <b-button type="submit" variant="primary">Submit</b-button>
+          <b-button type="reset" variant="danger">Reset</b-button>
+        </b-button-group>
+      </b-form>
+    </b-modal>
   </div>
-  <b-modal ref="addMoleculeModal"
-         id="molecule-modal"
-         title="Add a new molecule"
-         hide-footer>
-    <b-form @submit="onSubmit" @reset="onReset" class="w-100">
-    <b-form-group id="form-fName-group"
-                label="fName:"
-                label-for="form-fName-input">
-      <b-form-input id="form-fName-input"
-                    type="text"
-                    v-model="addMoleculeForm.fName"
-                    required
-                    placeholder="Enter name">
-      </b-form-input>
-    </b-form-group>
-    <b-form-group id="form-Mass-group"
-                  label="Mass:"
-                  label-for="form-Mass-input">
-        <b-form-input id="form-Mass-input"
-                      type="text"
-                      v-model="addMoleculeForm.Mass"
-                      required
-                      placeholder="Enter mass">
-        </b-form-input>
-      </b-form-group>
-    <b-form-group id="form-plot-group">
-      <b-form-checkbox-group v-model="addMoleculeForm.plot" id="form-checks">
-        <b-form-checkbox value="true">plot?</b-form-checkbox>
-      </b-form-checkbox-group>
-    </b-form-group>
-    <b-button type="submit" variant="primary">Submit</b-button>
-    <b-button type="reset" variant="danger">Reset</b-button>
-  </b-form>
-</b-modal>
 </template>
 
 <script>
@@ -109,6 +112,29 @@ export default {
           console.log(error);
           this.getmolecules();
         });
+    },
+    initForm() {
+      this.addMoleculeForm.fName = '';
+      this.addMoleculeForm.Mass = '';
+      this.addMoleculeForm.plot = [];
+    },
+    onSubmit(evt) {
+      evt.preventDefault();
+      this.$refs.addMoleculeModal.hide();
+      let plot = false;
+      if (this.addMoleculeForm.plot[0]) plot = true;
+      const payload = {
+        fName: this.addMoleculeForm.fName,
+        Mass: this.addMoleculeForm.Mass,
+        plot, // property shorthand
+      };
+      this.addMolecule(payload);
+      this.initForm();
+    },
+    onReset(evt) {
+      evt.preventDefault();
+      this.$refs.addMoleculeModal.hide();
+      this.initForm();
     },
   },
   created() {

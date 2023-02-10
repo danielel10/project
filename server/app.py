@@ -38,7 +38,7 @@ molecules = [
 ]
 
 
-@app.route('/Molecules', methods=['GET'])
+@app.route('/Molecules', methods=['GET', 'POST'])
 def all_molecules():
     response_object = {'status': 'success'}
     if request.method == 'POST':
@@ -46,7 +46,7 @@ def all_molecules():
         molecules.append({
             'fName': post_data.get('fName'),
             'Mass': post_data.get('Mass'),
-            'Plot': post_data.get('Plot')
+            'Plot': post_data.get('plot')
         })
         response_object['message'] = 'molecule added!'
     else:
