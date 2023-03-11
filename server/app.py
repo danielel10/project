@@ -1,6 +1,7 @@
 from flask import Flask, jsonify
 from flask_cors import CORS
 from flask import Flask, jsonify, request
+import uuid
 
 # configuration
 DEBUG = True
@@ -20,21 +21,12 @@ def ping_pong():
 
 
 molecules = [
-    {
+    {   
+        'id' : uuid.uuid4().hex,
         'fName': 'On the Road',
         'Mass': 'Jack Kerouac',
         'Plot': True
     },
-    {
-        'fName': 'Harry Potter and the Philosopher\'s Stone',
-        'Mass': 'J. K. Rowling',
-        'Plot': False
-    },
-    {
-        'fName': 'Green Eggs and Ham',
-        'Mass': 'Dr. Seuss',
-        'Plot': True
-    }
 ]
 
 
@@ -44,6 +36,7 @@ def all_molecules():
     if request.method == 'POST':
         post_data = request.get_json()
         molecules.append({
+            'id' : uuid.uuid4().hex,
             'fName': post_data.get('fName'),
             'Mass': post_data.get('Mass'),
             'Plot': post_data.get('plot')
@@ -52,6 +45,22 @@ def all_molecules():
     else:
         response_object['molecules'] = molecules
     return jsonify(response_object)
+
+#PUT and DELETE route handler
+@app.route('/<status_id>', methods=['PUT','DELETE'])
+def single_Mol(mol_id):
+    response_object = {'status':'success'}
+    if request.method == 'DELETE':
+        remove_mol(mol_id)
+        response_object['message'] = 'molecule Removed!'
+    return jsonify(response_object)
+
+def remove_mol(mol_id):
+    for mol in molecules:
+        if mol['id'] == mol_id:
+            molecules.remove(mol)
+            return True
+    return False
 
 
 if __name__ == '__main__':

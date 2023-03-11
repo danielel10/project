@@ -17,8 +17,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
-               <tr v-for="(molecule, index) in molecules" :key="index">
+              <tr v-for="(molecule, index) in molecules" :key="index">
               <td>{{ molecule.fName }}</td>
               <td>{{ molecule.Mass }}</td>
               <td>
@@ -27,8 +26,7 @@
               </td>
               <td>
                 <div class="btn-group" role="group">
-                  <button type="button" class="btn btn-warning btn-sm">Update</button>
-                  <button type="button" class="btn btn-danger btn-sm">Delete</button>
+                  <button type="button" class="btn btn-danger btn-sm" @click="deleteMol(Mol)">Delete</button>
                 </div>
               </td>
             </tr>
@@ -36,42 +34,39 @@
         </table>
       </div>
     </div>
-    <b-modal ref="addMoleculeModal"
-             id="molecule-modal"
-             title="Add a new molecule"
-             hide-footer>
+    <!--First Modal-->
+      <b-modal ref="addStatusModal"
+             id="status-modal"
+             title="Add a new staus"
+             hide-backdrop hide-footer>
         <b-form @submit="onSubmit" @reset="onReset" class="w-100">
-        <b-form-group id="form-fName-group"
-                    label="fName:"
-                    label-for="form-fName-input">
-          <b-form-input id="form-fName-input"
+        <b-form-group id="form-name-group"
+                    label="name:"
+                    label-for="form-name-input">
+          <b-form-input id="form-name-input"
                         type="text"
-                        v-model="addMoleculeForm.fName"
+                        v-model="addStatusForm.name"
                         required
                         placeholder="Enter name">
           </b-form-input>
         </b-form-group>
-        <b-form-group id="form-Mass-group"
-                      label="Mass:"
-                      label-for="form-Mass-input">
-            <b-form-input id="form-Mass-input"
+        <b-form-group id="form-type-group"
+                      label="type:"
+                      label-for="form-type-input">
+            <b-form-input id="form-type-input"
                           type="text"
-                          v-model="addMoleculeForm.Mass"
+                          v-model="addStatusForm.type"
                           required
-                          placeholder="Enter mass">
+                          placeholder="Enter type">
             </b-form-input>
         </b-form-group>
-        <b-form-group id="form-plot-group">
-          <b-form-checkbox-group v-model="addMoleculeForm.plot" id="form-checks">
-            <b-form-checkbox value="true">plot?</b-form-checkbox>
-          </b-form-checkbox-group>
-        </b-form-group>
-        <b-button-group>
           <b-button type="submit" variant="primary">Submit</b-button>
           <b-button type="reset" variant="danger">Reset</b-button>
-        </b-button-group>
       </b-form>
     </b-modal>
+    <!--End of First Modal-->
+
+    
   </div>
 </template>
 
@@ -137,6 +132,23 @@ export default {
       this.initForm();
     },
   },
+  removeMol(molId) {
+  const path = `http://localhost:5000/Molecules/${molId}`;
+  axios.delete(path)
+    .then(() => {
+      this.getmolecules();
+    })
+    .catch((error) => {
+      // eslint-disable-next-line
+      console.error(error);
+      this.getmolecules();
+    });
+},
+
+// Handle Delete Button
+deleteMol(mol) {
+  this.removeMol(mol.id);
+},
   created() {
     this.getmolecules();
   },
